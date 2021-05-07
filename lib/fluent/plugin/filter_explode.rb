@@ -1,10 +1,9 @@
 require 'fluent/plugin/filter'
+require 'fluent/plugin/mixin/mutate_event'
 
 module Fluent
   class ExplodeFilter < Filter
     Fluent::Plugin.register_filter('explode', self)
-
-    include Fluent::PluginMixin::MutateEvent
 
     def filter(tag, time, record)
       event = Fluent::PluginMixin::MutateEvent.new(record, expand_nesting:true)
