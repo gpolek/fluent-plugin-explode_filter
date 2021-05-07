@@ -7,13 +7,16 @@ module Fluent
 
     def filter(tag, time, record)
       event = Fluent::Plugin::Mixin::MutateEvent.new(record, expand_nesting:true)
-      event_data = Fluent::Plugin::Mixin::MutateEvent.new({}, expand_nesting:true)
-
-      event.keys.each do |key|
-        event_data.set(key, event.get(key))
-      end
-
+      event_data = iterate(event)
       event_data.to_record
+    end
+
+    def iterate(event)
+      event_data = Fluent::Plugin::Mixin::MutateEvent.new({}, expand_nesting:true)
+      event.each do |key, value|
+        value.is_a?(Hash) ? event_data.set(key, iterate(event.get(key))) : event_data.set(key, event.get(key))
+      end
+      return event_data
     end
   end
 end
