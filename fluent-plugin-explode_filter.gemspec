@@ -18,5 +18,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
 
   spec.add_runtime_dependency "fluentd", ["> 1.0", "< 2"]
-  spec.add_runtime_dependency "fluent-plugin-mutate_filter", [">= 0.2.0", "<= 1.1.0"]
 end
