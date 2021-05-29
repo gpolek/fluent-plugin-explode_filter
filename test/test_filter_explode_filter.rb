@@ -36,12 +36,15 @@ class ExplodeFilterTest < Test::Unit::TestCase
     d = create_driver
     
     d.run(default_tag: @tag) do
-      d.feed("k" => 'v1', "foo.bar" => 'v2', "log.test" => 'v3', "properties" => { "k" => "v"})
+      d.feed("k" => 'v', "foo.bar" => 'foobar', "log.string" => '123', "log.number" => 123, "properties" => { "k" => "v"})
     end
 
+    assert_equal [{"k" => 'v', "foo" => { "bar" => 'foobar' }, "log" => { "string" => '123', "number" => 123 }, "properties" => { "k" => "v"}}], d.filtered.map(&:last)
+  
     assert_equal Hash, d.filtered.map(&:last)[0]["properties"].class
     assert_equal true, d.filtered.map(&:last)[0]["properties"].is_a?(Hash)
-
-    assert_equal [{"k" => 'v1', "foo" => { "bar" => 'v2' }, "log" => { "test" => 'v3' }, "properties" => { "k" => "v"}}], d.filtered.map(&:last)
+    assert_equal true, d.filtered.map(&:last)[0]["k"].is_a?(String)
+    assert_equal true, d.filtered.map(&:last)[0]["log"]["string"].is_a?(String)
+    assert_equal true, d.filtered.map(&:last)[0]["log"]["number"].is_a?(Numeric)
   end
 end
