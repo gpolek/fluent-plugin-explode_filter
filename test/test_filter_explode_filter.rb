@@ -36,9 +36,12 @@ class ExplodeFilterTest < Test::Unit::TestCase
     d = create_driver
     
     d.run(default_tag: @tag) do
-      d.feed("k" => 'v1', "foo.bar" => 'v2', "log.test" => 'v3')
+      d.feed("k" => 'v1', "foo.bar" => 'v2', "log.test" => 'v3', "properties" => { "k" => "v"})
     end
 
-    assert_equal [{"k" => 'v1', "foo" => { "bar" => 'v2' }, "log" => { "test" => 'v3' }}], d.filtered.map(&:last)
+    assert_equal Hash, d.filtered.map(&:last)[0]["properties"].class
+    assert_equal true, d.filtered.map(&:last)[0]["properties"].is_a?(Hash)
+
+    assert_equal [{"k" => 'v1', "foo" => { "bar" => 'v2' }, "log" => { "test" => 'v3' }, "properties" => { "k" => "v"}}], d.filtered.map(&:last)
   end
 end
